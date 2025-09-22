@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ネオン風デジタル時計 - ミニアプリ保管庫</title>　<!--タイトル名忘れずに-->
+        <link rel="stylesheet" href="/assets/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjp.css">
+        <link rel="icon" href="/assets/フィラメント付きの電球アイコン.png">
+        <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    </head>
+    <body>
+        <main>
+        <!--アプリ名-->
+        <h1>ネオン風デジタル時計</h1>　
+        <!--説明文-->
+        <p>
+        「未来感のあるデジタル時計つくりたい」とGPTに無茶振りしたら出してくれたプログラムです。
+        </p>
+        <br>
+        <p>
+            <a class="demo-link" href="demo.html" target="_blank">▶ 実行してみる</a>
+        </p>
+        <div class="tabs">
+            <button onclick="showTab('html')">HTML</button>
+            <button onclick="showTab('js')">JavaScript</button>
+        </div>
+
+        <div id="html" class="code-block active">
+        <pre><code class="language-html">
+        <!-- 以下にエスケープしたHTMLを貼る -->
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+&lt;title&gt;ネオン風デジタル時計&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;style&gt;
+body{
+margin:0;
+background-color:black;
+}
+&lt;/style&gt;
+&lt;canvas id=&quot;clock&quot;&gt;&lt;/canvas&gt;
+&lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code></pre>
+        </div> 
+        
+        <!-- JavaScript -->
+        <div id="js" class="code-block">
+        <pre><code class="language-javascript">
+        <!-- 以下にJavaScriptを貼る -->
+const canvas = document.getElementById("clock");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+class Particle {
+  constructor(x, y, color) {
+    this.x = x;
+    this.y = y;
+    this.radius = Math.random() * 2;
+    this.color = color;
+    this.vx = (Math.random() - 0.5) * 0.5;
+    this.vy = (Math.random() - 0.5) * 0.5;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.fillStyle = this.color;
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+let particles = [];
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < 100; i++) {
+    particles.push(new Particle(
+      Math.random() * canvas.width,
+      Math.random() * canvas.height,
+      "rgba(0, 255, 255, 0.3)"
+    ));
+  }
+}
+
+function drawClock() {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-GB', { hour12: false });
+  
+  // 色を秒によって変化
+  const hue = (now.getSeconds() * 6) % 360;
+  const neonColor = `hsl(${hue}, 100%, 60%)`;
+
+  ctx.shadowBlur = 20;
+  ctx.shadowColor = neonColor;
+  ctx.font = `${Math.floor(canvas.width / 8)}px Arial Black`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = neonColor;
+  ctx.fillText(timeStr, canvas.width / 2, canvas.height / 2);
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // パーティクル描画
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+
+  // 時計描画
+  drawClock();
+
+  requestAnimationFrame(animate);
+}
+
+initParticles();
+animate();
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  initParticles();
+});
+    
+    
+        </code></pre>
+        </div>
+        <br>
+
+        <p>
+            <a href="../" class="back-button">← 保管庫にもどる</a>
+        </p>
+        </main>
+        <script>
+        hljs.highlightAll();
+        function showTab(lang) {
+            document.querySelectorAll('.code-block').forEach(div => {
+                div.classList.remove('active');
+            });
+            document.getElementById(lang).classList.add('active');
+        }
+        </script>
+    </body>
+</html>

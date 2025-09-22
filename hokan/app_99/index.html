@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>星座をつなぐ空間ペン - ミニアプリ保管庫</title>
+        <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+        <link rel="icon" href="/assets/フィラメント付きの電球アイコン.png">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+        <link rel="stylesheet" href="/assets/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    </head>
+    <body>
+        <main>
+        <h1>星座をつなぐ空間ペン</h1>
+        <p>
+            スマホなら画面をタップ、PCならクリックしてみてください。とてもきれいです。
+        </p>
+        <br>
+        <p>
+            <a class="demo-link" href="demo.html" target="_blank">▶ 実行してみる</a>
+        </p>
+        <div class="tabs">
+            <button onclick="showTab('html')">HTML</button>
+            <button onclick="showTab('js')">JavaScript</button>
+        </div>
+
+        <!-- HTML -->
+        <div id="html" class="code-block active">
+        <pre><code class="language-html"><!-- 以下にエスケープしたHTMLを貼る -->
+        &lt;!DOCTYPE html&gt;
+        &lt;html lang=&quot;ja&quot;&gt;
+        &lt;head&gt;
+        &lt;meta charset=&quot;UTF-8&quot;&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+        &lt;title&gt;星座をつなぐ空間ペン 進化版&lt;/title&gt;
+        &lt;style&gt;
+        body{
+            margin:0;
+            background:black;
+            overflow:hidden;
+        }
+        canvas{
+            display:block;
+        }
+        &lt;/style&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;canvas id=&quot;canvas&quot;&gt;&lt;/canvas&gt;
+            &lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+
+
+
+        </code></pre>
+        </div> 
+        
+        <!-- JavaScript -->
+        <div id="js" class="code-block">
+        <pre><code class="language-javascript"><!-- 以下にJavaScriptを貼る -->
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+let width,height;
+function resize(){
+    width=canvas.width=window.innerWidth;
+    height=canvas.height=window.innerHeight;
+}
+
+resize();
+window.addEventListener("resize",resize);
+
+class Star{
+    constructor(x,y){
+        this.x=x;
+        this.y=y;
+        this.vx=(Math.random()-0.5)*0.2;
+        this.vy=(Math.random()-0.5)*0.2;
+        this.hue=Math.random()*360;
+        this.radius=2+Math.random()*1.5;
+    }
+    update(stars){
+        this.hue+=0.2;
+        if(this.hue>360)this.hue-=360;
+        for(let other of stars){
+            if(other===this)continue;
+            const dx=other.x-this.x;
+            const dy=other.y-this.y;
+            const dist=Math.sqrt(dx*dx+dy*dy);
+            if(dist<150&&dist>1){
+                const force=0.0005;
+                this.vx+=dx*force;
+                this.vy+=dy*force;
+            }
+        }
+        this.x+=this.vx;
+        this.y+=this.vy;
+        if(this.x<0||this.x>width)this.vx*=-1;
+        if(this.y<0||this.y>height)this.vy*=-1;
+    }
+    draw(){
+        ctx.beginPath();
+        ctx.fillStyle=`hsl(${this.hue},100%,80%)`;
+        ctx.shadowColor=`hsl(${this.hue},100%,80%)`;
+        ctx.shadowBlur=10;
+        ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+        ctx.fill();
+        ctx.shadowBlur=0;
+    }
+}
+
+const stars=[];
+canvas.addEventListener("pointerdown",(e)=>{
+    stars.push(new Star(e.clientX,e.clientY));
+});
+
+function drawLines(){
+    for(let i=0;i<stars.length;i++){
+        for(let j=i+1;j<stars.length;j++){
+            const a=stars[i],b=stars[j];
+            const dx=a.x-b.x,dy=a.y-b.y;
+            const dist=Math.sqrt(dx*dx+dy*+dy);
+            if(dist<150){
+                const opacity=1-dist/150;
+                ctx.beginPath();
+                ctx.strokeStyle=`rgba(255,255,255,${opacity})`;
+                ctx.moveTo(a.x,a.y);
+                ctx.lineTo(b.x,b.y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+function animate(){
+    ctx.fillStyle="rgba(0,0,0,0.2)";
+    ctx.fillRect(0,0,width,height);
+    drawLines();
+    for(let star of stars){
+        star.update(stars);
+        star.draw();
+    }
+    requestAnimationFrame(animate);
+}
+
+animate();
+        </code></pre>
+        </div>
+        <br>
+
+        <p>
+            <a href="../" class="back-button">← 保管庫にもどる</a>
+        </p>
+        </main>
+        <script>
+        hljs.highlightAll();
+        function showTab(lang) {
+            document.querySelectorAll('.code-block').forEach(div => {
+                div.classList.remove('active');
+            });
+            document.getElementById(lang).classList.add('active');
+        }
+        </script>
+        
+
+    </body>
+</html>
