@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>超シンプル 水面の揺らぎ - ミニアプリ保管庫</title>　<!--タイトル名忘れずに-->
+        <link rel="stylesheet" href="/assets/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjp.css">
+        <link rel="icon" href="/assets/フィラメント付きの電球アイコン.png">
+        <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    </head>
+    <body>
+        <main>
+        <!--アプリ名-->
+        <h1>超シンプル 水面の揺らぎ</h1>　
+        <!--説明文-->
+        <p>
+        リアルな物理シミュレーションではなく、sin波のゆらぎを横方向に動かすだけの簡易版。
+        <br>
+        ※JavaScriptのコードは直接HTMLファイル内に埋め込んでいます。
+        </p>
+        <br>
+        <p>
+            <a class="demo-link" href="demo.html" target="_blank">▶ 実行してみる</a>
+        </p>
+        <div class="tabs">
+            <button onclick="showTab('html')">HTML</button>
+        </div>
+
+        <div id="html" class="code-block active">
+        <pre><code class="language-html">
+        <!-- 以下にエスケープしたHTMLを貼る -->
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;超シンプル 水面の揺らぎ&lt;/title&gt;
+  &lt;style&gt;
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;canvas id=&quot;canvas&quot;&gt;&lt;/canvas&gt;
+&lt;script&gt;
+const canvas = document.getElementById(&quot;canvas&quot;);
+const ctx = canvas.getContext(&quot;2d&quot;);
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let t = 0; // 時間
+
+function animate(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for(let y = 0; y &lt; canvas.height; y += 4){
+    ctx.beginPath();
+    for(let x = 0; x &lt; canvas.width; x += 4){
+      // sin波で揺らぎを作る
+      let offset = Math.sin((x + t) * 0.02) * 5;
+      ctx.fillStyle = `hsl(${180 + offset*10}, 70%, 60%)`;
+      ctx.fillRect(x, y + offset, 4, 4);
+    }
+  }
+
+  t += 1; // 時間を進める
+  requestAnimationFrame(animate);
+}
+
+animate();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+
+
+        </code></pre>
+        </div> 
+        
+        
+        </div>
+        <br>
+
+        <p>
+            <a href="../" class="back-button">← 保管庫にもどる</a>
+        </p>
+        </main>
+        <script>
+        hljs.highlightAll();
+        function showTab(lang) {
+            document.querySelectorAll('.code-block').forEach(div => {
+                div.classList.remove('active');
+            });
+            document.getElementById(lang).classList.add('active');
+        }
+        </script>
+    </body>
+</html>

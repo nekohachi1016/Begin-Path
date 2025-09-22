@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>カラフル時計 - ミニアプリ保管庫</title>
+        <link rel="stylesheet" href="/assets/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjp.css">
+        <link rel="icon" href="/assets/フィラメント付きの電球アイコン.png">
+        <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    </head>
+    <body>
+        <main>
+        <h1>カラフル時計</h1>
+        <p>
+            １秒ごとに背景色が変わるシンプルなデジタル時計です。<br>
+            ※JavaScriptのコードは直接HTMLファイル内に埋め込んでいます。
+        </p>
+        <br>
+        <p>
+            <a class="demo-link" href="demo.html" target="_blank">▶ 実行してみる</a>
+        </p>
+        <div class="tabs">
+            <button onclick="showTab('html')">HTML</button>
+        </div>
+
+        <!-- HTML -->
+        <div id="html" class="code-block active">
+        <pre><code class="language-html"><!-- 以下にエスケープしたHTMLを貼る -->
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;カラフル時計&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5em;
+      color: white;
+      font-family: monospace;
+      transition: background-color 0.5s ease;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id=&quot;clock&quot;&gt;--:--:--&lt;/div&gt;
+
+  &lt;script&gt;
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, &#039;0&#039;);
+      const m = now.getMinutes().toString().padStart(2, &#039;0&#039;);
+      const s = now.getSeconds().toString().padStart(2, &#039;0&#039;);
+
+      // 時間を表示
+      document.getElementById(&quot;clock&quot;).textContent = `${h}:${m}:${s}`;
+
+      // 背景色を変える（HSL：秒を色相に使う）
+      const hue = (now.getSeconds() * 6); // 0〜354度
+      document.body.style.backgroundColor = `hsl(${hue}, 70%, 50%)`;
+    }
+
+    // 初回と1秒ごとの更新
+    updateClock();
+    setInterval(updateClock, 1000);
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+
+
+
+        </code></pre>
+        </div> 
+        
+        
+        <br>
+        <p>
+            <a href="../" class="back-button">← 保管庫にもどる</a>
+        </p>
+
+        </main>
+        <script>
+        hljs.highlightAll();
+        function showTab(lang) {
+            document.querySelectorAll('.code-block').forEach(div => {
+                div.classList.remove('active');
+            });
+            document.getElementById(lang).classList.add('active');
+        }
+        </script>
+        
+
+    </body>
+</html>
