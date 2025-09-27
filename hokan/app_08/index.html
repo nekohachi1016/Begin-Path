@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>癒やし系草アニメ - ミニアプリ保管庫</title><!--タイトル名忘れずに-->
+        <link rel="stylesheet" href="../../assets/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjp.css">
+        <link rel="icon" href="../../assets/フィラメント付きの電球アイコン.png">
+        <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    </head>
+    <body>
+        <main>
+        <!--アプリ名-->
+        <h1>癒やし系草アニメ</h1>
+        <!--説明文-->
+        <p>
+        明け方（夕暮れ）にホタルが光るなかで雨がシトシトと降っている感じの癒やし系アニメーションです。
+        </p>
+        <br>
+        <p>
+            <a class="demo-link" href="demo.html" target="_blank">▶ 実行してみる</a>
+        </p>
+        <div class="tabs">
+            <button onclick="showTab('html')">HTML</button>
+            <button onclick="showTab('js')">JavaScript</button>
+        </div>
+
+        <div id="html" class="code-block active">
+        <pre><code class="language-html">
+        <!-- 以下にエスケープしたHTMLを貼る -->
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+&lt;title&gt;癒し系草アニメ&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;canvas id=&quot;canvas&quot;&gt;&lt;/canvas&gt;
+&lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code></pre>
+        </div> 
+        
+        <!-- JavaScript -->
+        <div id="js" class="code-block">
+        <pre><code class="language-javascript">
+        <!-- 以下にJavaScriptを貼る -->
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// --- Perlin noise setup ---
+function lerp(a, b, t){ return a + (b - a) * t; }
+function fade(t){ return t*t*t*(t*(t*6-15)+10); }
+function grad(hash, x){ return (hash & 1 ? -1 : 1) * x; }
+const p = Array.from({length: 512}, (_,i)=>i<256?i:0);
+function shuffle(){ for(let i=255;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [p[i],p[j]]=[p[j],p[i]]; } }
+shuffle();
+function perlin1D(x){
+  const X = Math.floor(x) & 255;
+  x = x - Math.floor(x);
+  const u = fade(x);
+  const a = p[X];
+  const b = p[X+1];
+  return lerp(grad(a, x), grad(b, x-1), u);
+}
+
+// --- Grass setup ---
+const numBlades = 200;
+const blades = [];
+for(let i=0;i<numBlades;i++){
+  blades.push({
+    x: i * (canvas.width/numBlades),
+    height: 80 + Math.random()*120,
+    color: `hsl(${100 + Math.random()*60}, 70%, 50%)`,
+    offset: Math.random()*1000
+  });
+}
+
+// --- Rain setup ---
+const rainCount = 100;
+const rainDrops = [];
+for(let i=0;i<rainCount;i++){
+  rainDrops.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    len: 10 + Math.random()*20,
+    speed: 2 + Math.random()*4
+  });
+}
+
+// --- Fireflies setup ---
+const firefliesCount = 20;
+const fireflies = [];
+for(let i=0;i<firefliesCount;i++){
+  fireflies.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height/2 + canvas.height/2,
+    radius: 1 + Math.random()*2,
+    phase: Math.random()*Math.PI*2
+  });
+}
+
+// --- Animate ---
+function draw(){
+  const time = Date.now()/1000;
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0,0,0,canvas.height);
+  const t = (Math.sin(time*0.05)+1)/2; // 0~1
+  grad.addColorStop(0, `hsl(${200 - 50*t}, 50%, ${20 + 20*t}%)`); // sky top
+  grad.addColorStop(1, `hsl(${100 - 50*t}, 80%, ${10 + 30*t}%)`); // ground
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // Draw grass
+  blades.forEach(b=>{
+    const sway = perlin1D(time + b.offset)*20; // Perlin揺れ
+    ctx.strokeStyle = b.color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(b.x, canvas.height);
+    ctx.lineTo(b.x + sway, canvas.height - b.height);
+    ctx.stroke();
+  });
+
+  // Draw rain
+  ctx.strokeStyle = "rgba(173,216,230,0.5)";
+  rainDrops.forEach(r=>{
+    ctx.beginPath();
+    ctx.moveTo(r.x, r.y);
+    ctx.lineTo(r.x, r.y + r.len);
+    ctx.stroke();
+    r.y += r.speed;
+    if(r.y > canvas.height) r.y = -r.len;
+  });
+
+  // Draw fireflies
+  fireflies.forEach(f=>{
+    const glow = (Math.sin(time*2 + f.phase)+1)/2;
+    ctx.fillStyle = `rgba(255,255,150,${glow})`;
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.radius+glow*2, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+        </code></pre>
+        </div>
+        <br>
+
+        <p>
+            <a href="../" class="back-button">← 保管庫にもどる</a>
+        </p>
+        </main>
+        <script>
+        hljs.highlightAll();
+        function showTab(lang) {
+            document.querySelectorAll('.code-block').forEach(div => {
+                div.classList.remove('active');
+            });
+            document.getElementById(lang).classList.add('active');
+        }
+        </script>
+    </body>
+</html>

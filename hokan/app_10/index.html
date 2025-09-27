@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>虹の波紋 - ミニアプリ保管庫</title><!--タイトル名忘れずに-->
+        <link rel="stylesheet" href="../../assets/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjp.css">
+        <link rel="icon" href="../../assets/フィラメント付きの電球アイコン.png">
+        <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    </head>
+    <body>
+        <main>
+        <!--アプリ名-->
+        <h1>虹の波紋</h1>
+        <!--説明文-->
+        <p>
+        クリックすると波紋が広がります。
+        </p>
+        <br>
+        <p>
+            <a class="demo-link" href="demo.html" target="_blank">▶ 実行してみる</a>
+        </p>
+        <div class="tabs">
+            <button onclick="showTab('html')">HTML</button>
+            <button onclick="showTab('js')">JavaScript</button>
+        </div>
+
+        <div id="html" class="code-block active">
+        <pre><code class="language-html">
+        <!-- 以下にエスケープしたHTMLを貼る -->
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+  &lt;title&gt;虹の波紋&lt;/title&gt;
+  &lt;style&gt;
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+    }
+    canvas {
+      display: block;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;canvas id=&quot;canvas&quot;&gt;&lt;/canvas&gt;
+  &lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code></pre>
+        </div> 
+        
+        <!-- JavaScript -->
+        <div id="js" class="code-block">
+        <pre><code class="language-javascript">
+        <!-- 以下にJavaScriptを貼る -->
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let width, height;
+function resize() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+// 波紋データ
+let ripples = [];
+
+canvas.addEventListener("click", (e) => {
+  ripples.push({
+    x: e.clientX,
+    y: e.clientY,
+    radius: 0,
+    hue: Math.random() * 360,
+    alpha: 1
+  });
+});
+
+function animate() {
+  // 残像を出すためにやや透明な黒で塗り潰し
+  ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+  ctx.fillRect(0, 0, width, height);
+
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    const r = ripples[i];
+    ctx.beginPath();
+    ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+    ctx.strokeStyle = `hsla(${r.hue}, 100%, 60%, ${r.alpha})`;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    r.radius += 2;
+    r.alpha -= 0.008;
+    r.hue += 1;
+
+    if (r.alpha <= 0) {
+      ripples.splice(i, 1);
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();    
+        </code></pre>
+        </div>
+        <br>
+
+        <p>
+            <a href="../" class="back-button">← 保管庫にもどる</a>
+        </p>
+        </main>
+        <script>
+        hljs.highlightAll();
+        function showTab(lang) {
+            document.querySelectorAll('.code-block').forEach(div => {
+                div.classList.remove('active');
+            });
+            document.getElementById(lang).classList.add('active');
+        }
+        </script>
+    </body>
+</html>

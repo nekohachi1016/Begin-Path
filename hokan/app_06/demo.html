@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" href="../../assets/フィラメント付きの電球アイコン.png"><!--これをhead内に埋め込む-->
+<title>疑似乱数の可視化</title>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// 毎フレーム新しいランダムな点を描く
+function drawRandomPoints(count) {
+  for (let i = 0; i < count; i++) {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height;
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fillRect(x, y, 2, 2);
+  }
+}
+
+function animate() {
+  // 透明な黒で塗りつぶして残像効果
+  ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  drawRandomPoints(200);
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>

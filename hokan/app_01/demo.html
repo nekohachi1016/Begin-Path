@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>カラフル時計</title>
+  <link rel="icon" href="../../assets/フィラメント付きの電球アイコン.png">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5em;
+      color: white;
+      font-family: monospace;
+      transition: background-color 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+  <div id="clock">--:--:--</div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, '0');
+      const m = now.getMinutes().toString().padStart(2, '0');
+      const s = now.getSeconds().toString().padStart(2, '0');
+
+      // 時間を表示
+      document.getElementById("clock").textContent = `${h}:${m}:${s}`;
+
+      // 背景色を変える（HSL：秒を色相に使う）
+      const hue = (now.getSeconds() * 6); // 0〜354度
+      document.body.style.backgroundColor = `hsl(${hue}, 70%, 50%)`;
+    }
+
+    // 初回と1秒ごとの更新
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>

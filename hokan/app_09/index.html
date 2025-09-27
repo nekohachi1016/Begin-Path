@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>レーザーグリッド - ミニアプリ保管庫</title><!--タイトル名忘れずに-->
+        <link rel="stylesheet" href="../../assets/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjp.css">
+        <link rel="icon" href="../../assets/フィラメント付きの電球アイコン.png">
+        <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    </head>
+    <body>
+        <main>
+        <!--アプリ名-->
+        <h1>レーザーグリッド</h1>
+        <!--説明文-->
+        <p>
+        横線が下から上へ流れ、縦線がパースを持って中央に収束することでネオン線が動いて奥行きを感じる演出。
+        </p>
+        <br>
+        <p>
+            <a class="demo-link" href="demo.html" target="_blank">▶ 実行してみる</a>
+        </p>
+        <div class="tabs">
+            <button onclick="showTab('html')">HTML</button>
+            <button onclick="showTab('js')">JavaScript</button>
+        </div>
+
+        <div id="html" class="code-block active">
+        <pre><code class="language-html">
+        <!-- 以下にエスケープしたHTMLを貼る -->
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+  &lt;title&gt;レーザーグリッド&lt;/title&gt;
+  &lt;style&gt;
+    body, html {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;canvas id=&quot;canvas&quot;&gt;&lt;/canvas&gt;
+  &lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code></pre>
+        </div> 
+        
+        <!-- JavaScript -->
+        <div id="js" class="code-block">
+        <pre><code class="language-javascript">
+        <!-- 以下にJavaScriptを貼る -->
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+let lines = [];
+let spacing = 30;
+let speed = 1;
+
+for (let y = 0; y < canvas.height; y += spacing) {
+  lines.push(y);
+}
+
+function drawGrid() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // 横線（奥へ流れる）
+  ctx.strokeStyle = "lime";
+  ctx.lineWidth = 1;
+  lines.forEach((y, i) => {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.stroke();
+    lines[i] += speed;
+    if (lines[i] > canvas.height) {
+      lines[i] = 0;
+    }
+  });
+
+  // 縦線（遠近感）
+  const centerX = canvas.width / 2;
+  const numVerticalLines = 40;
+  for (let i = -numVerticalLines; i <= numVerticalLines; i++) {
+    const x = centerX + i * spacing;
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(centerX + i * 0.5, canvas.height);
+    ctx.stroke();
+  }
+}
+
+function animate() {
+  drawGrid();
+  requestAnimationFrame(animate);
+}
+
+animate();
+        </code></pre>
+        </div>
+        <br>
+
+        <p>
+            <a href="../" class="back-button">← 保管庫にもどる</a>
+        </p>
+        </main>
+        <script>
+        hljs.highlightAll();
+        function showTab(lang) {
+            document.querySelectorAll('.code-block').forEach(div => {
+                div.classList.remove('active');
+            });
+            document.getElementById(lang).classList.add('active');
+        }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,52 @@
+<link rel="icon" href="../../assets/フィラメント付きの電球アイコン.png"><!--これをhead内に埋め込む-->
+<title>バブルソートの可視化</title>
+<canvas id="canvas"></canvas>
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = 400;
+
+let array = [];
+const N = 100; // 要素数
+for (let i = 0; i < N; i++) {
+  array.push(Math.random());
+}
+
+let i = 0;
+let j = 0;
+
+function drawArray(arr, highlightA, highlightB) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const barWidth = canvas.width / arr.length;
+
+  arr.forEach((val, index) => {
+    const height = val * canvas.height;
+    ctx.fillStyle = (index === highlightA || index === highlightB) ? "red" : "white";
+    ctx.fillRect(index * barWidth, canvas.height - height, barWidth, height);
+  });
+}
+
+function bubbleStep() {
+  if (i < array.length) {
+    if (j < array.length - i - 1) {
+      if (array[j] > array[j + 1]) {
+        [array[j], array[j + 1]] = [array[j + 1], array[j]]; // swap
+      }
+      drawArray(array, j, j + 1);
+      j++;
+    } else {
+      j = 0;
+      i++;
+    }
+  } else {
+    drawArray(array); // 最後の状態
+  }
+
+  requestAnimationFrame(bubbleStep);
+}
+
+document.body.style.background = "black";
+bubbleStep();
+</script>
